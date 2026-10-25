@@ -1,0 +1,31 @@
+:root {
+  --vp-c-brand-1: #0f4c5c;
+  --vp-c-brand-2: #16697a;
+  --vp-c-brand-3: #c5a059;
+}
+
+.dark {
+  --vp-c-bg: #000000;
+  --vp-c-bg-alt: #000000;
+  --vp-c-bg-elv: #0a0a0a;
+  --vp-c-bg-soft: #0a0a0a;
+  --vp-sidebar-bg-color: #000000;
+  --vp-c-gutter: #1a1a1a;
+  --vp-c-divider: #222222;
+  --vp-c-border: #222222;
+}
+
+.mermaid {
+  display: flex;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+table {
+  display: table;
+  width: 100%;
+}
