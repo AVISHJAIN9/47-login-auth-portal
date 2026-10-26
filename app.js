@@ -9,10 +9,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Connections to MongoDB
-const dbUrl = 'mongodb://localhost:27017/hospital_login';
-mongoose.connect(dbUrl)
-  .then(() => console.log('Connected to MongoDB: hospital_login'))
-  .catch(err => console.error('MongoDB connection error:', err));
+const dbUrl = process.env.MONGO_URI || process.env.MONGODB_URI;
+if (dbUrl) {
+  mongoose.connect(dbUrl)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('MongoDB connection error:', err));
+} else {
+  console.log('No MONGO_URI provided, running in standalone mode');
+}
 
 //getting the User Schema
 const userSchema = new mongoose.Schema({
@@ -27,13 +31,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //  session Setup
-app.use(session({
-  secret: 'your_secret_key',
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || 'your_secret_key_1234567890',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: dbUrl }),
   cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
-}));
+};
+
+if (dbUrl) {
+  sessionConfig.store = MongoStore.create({ mongoUrl: dbUrl });
+}
+
+app.use(session(sessionConfig));
+
+// Health check endpoint for monitoring & deployment verification
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
